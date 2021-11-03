@@ -1,0 +1,50 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+}
+
+.important {
+    font-weight: bold;
+    color: red;
+}
+
+.wrapper {
+    margin: 0 auto;
+    padding: 15px;
+    width: min(650px, 100%);
+    min-height: 50vh;
+    background-color: rgba(128, 128, 128, 0.2);
+    box-shadow: 5px 8px 35px -5px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(12, 6, 6, 0.3);
+
+}
+
+.app-title {
+    margin: 0 auto;
+    padding: 8px;
+    background-color: rgba(0, 255, 255, 0.18);
+
+}
+
+.app-body {
+
+}
+
+.input-add-task {
+
+}
+
+.button-add-task {
+
+}
+
+.tasks-list {
+
+}
+
+.tasks-list-item {
+
+}
