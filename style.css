@@ -3,12 +3,14 @@
 }
 
 body {
-
+    margin: 10px 0;
+    padding: 0;
 }
 
 .important {
     font-weight: bold;
-    color: red;
+    color: #f84c4c;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8), 3px 3px 3px dimgrey;
 }
 
 .wrapper {
@@ -30,19 +32,27 @@ body {
 }
 
 .app-body {
-
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 8px;
+    margin: 10px auto;
 }
 
 .input-add-task {
-
+    width: min(500px, 100%);
+    margin: 0 auto;
 }
 
 .button-add-task {
-
+    border-radius: 8px;
+    background-color: rgba(103, 103, 171, 0.16);
+    width: min(100px, 100%);
+    margin: 0 auto;
 }
 
 .tasks-list {
-
+list-style-type: none;
 }
 
 .tasks-list-item {
