@@ -24,25 +24,37 @@ let todoListArr = [
     }
 ];
 
-if (localStorage.getItem('todo')) {
-    todoListArr = JSON.parse(localStorage.getItem('todo'))
-} else {
-    localStorage.setItem('todo', JSON.stringify(todoListArr));
-}
+
+const initLocalStorage  = () => {
+    if (localStorage.getItem('todo')) {
+        todoListArr = JSON.parse(localStorage.getItem('todo'))
+    } else {
+        localStorage.setItem('todo', JSON.stringify(todoListArr));
+    }
+};
+initLocalStorage();
+
+// const removeBtn = document.createElement('button');
+// const removeBtnText = document.createTextNode('X');
+// const renderNewRemoveBtn = () => {
+//     removeBtn.type = 'button';
+//     removeBtn.classList.add('remove-btn', 'righted');
+//     removeBtn.append(removeBtnText);
+// };
 
 const renderSingleTask = (task, index) => {
     const newItem = document.createElement('li');
     const newItemLabel = document.createElement('label');
     const newCheckbox = document.createElement('input');
-    const removeBtn = document.createElement('button');
-    const removeBtnText = document.createTextNode('X');
+    const itemMenuBtn = document.createElement('button');
+    const itemMenuBtnText = document.createTextNode('Menu');
 
     const renderNewItem = () => {
         newItem.classList.add('tasks-list-item');
         newItem.important = task.important;
         newItemLabel.innerHTML = task.todo;
         newItem.append(newItemLabel);
-        newItem.appendChild(removeBtn);
+        newItem.appendChild(itemMenuBtn);
         newItem.prepend(newCheckbox);
 
         if (newItem.important) {
@@ -65,19 +77,57 @@ const renderSingleTask = (task, index) => {
         })
     };
 
-    const renderNewRemoveBtn = () => {
-        removeBtn.type = 'button';
-        removeBtn.classList.add('remove-btn', 'righted');
-        removeBtn.append(removeBtnText);
-    };
+    const renderItemMenuBtn = () => {
+        itemMenuBtn.type = 'button';
+        itemMenuBtn.classList.add('menu-btn');
+        itemMenuBtn.append(itemMenuBtnText);
+        itemMenuBtn.onclick = itemMenuRender;
+};
 
     tasksList.appendChild(newItem);
     renderNewItem();
     renderNewCheckbox();
-    renderNewRemoveBtn();
+    renderItemMenuBtn();
 };
 
 const renderTasks = () => todoListArr.forEach((item, index) => renderSingleTask(item, index));
+
+const itemMenuRender = () => {
+    const menuFrame = document.createElement('div');
+    tasksList.append(menuFrame);
+    menuFrame.classList.add('menu-frame');
+
+    const menuFrameTitle = document.createElement('h1');
+    menuFrameTitle.classList.add('menu-frame--title');
+    menuFrame.append(menuFrameTitle);
+
+    const menuFrameTitleText = document.createTextNode('Task title');
+    menuFrameTitle.append(menuFrameTitleText);
+
+    const menuFrameMessage = document.createElement('div');
+    const menuFrameMessageTextNode = document.createTextNode('Task message. It may be very loooooooooooooooooong message... if you want... ');
+    menuFrameMessage.append(menuFrameMessageTextNode);
+    menuFrameMessage.classList.add('menu-frame--message');
+    menuFrame.append(menuFrameMessage);
+
+    const menuFrameBtnOk = document.createElement('div');
+    menuFrameBtnOk.classList.add('menu-frame--btn-ok');
+    menuFrame.append(menuFrameBtnOk);
+
+    const okBtnTextNode = document.createTextNode('Ok');
+    menuFrameBtnOk.append(okBtnTextNode);
+
+    const menuFrameBtnDel = document.createElement('div');
+    menuFrameBtnDel.classList.add('menu-frame--btn-delete');
+    menuFrame.append(menuFrameBtnDel);
+
+    const delBtnTextNode = document.createTextNode('Delete');
+    menuFrameBtnDel.append(delBtnTextNode);
+
+    menuFrameBtnOk.onclick = () => tasksList.removeChild(tasksList.lastChild);
+
+    menuFrameBtnDel.onclick = () => tasksList.removeChild(tasksList.lastChild);
+};
 
 const reloadRender = () => {
     while (tasksList.hasChildNodes()) {
@@ -110,7 +160,6 @@ const buttonAddTaskHandler = () => {
     localStorage.setItem('todo', JSON.stringify(todoListArr));
     reloadRender();
 };
-
 
 document.addEventListener("DOMContentLoaded", renderTasks);
 
