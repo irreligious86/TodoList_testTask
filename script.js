@@ -109,8 +109,6 @@ const buttonAddTaskHandler = () => {
     todoListArr.push(newTodo);
     localStorage.setItem('todo', JSON.stringify(todoListArr));
     reloadRender();
-    renderTasks();
-    console.log(localStorage.getItem('todo'));
 };
 
 
@@ -137,7 +135,6 @@ tasksList.addEventListener('contextmenu', event => {
             item.important = !item.important;
             localStorage.setItem('todo', JSON.stringify(todoListArr));
         }
-
-    })
+    });
     reloadRender();
 });
