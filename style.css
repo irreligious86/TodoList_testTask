@@ -26,7 +26,6 @@ body {
     background-color: rgba(128, 128, 128, 0.2);
     box-shadow: 5px 8px 35px -5px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(12, 6, 6, 0.3);
-
 }
 
 .app-title {
@@ -70,13 +69,6 @@ body {
     background-color: rgba(250, 250, 210, 0.47);
 }
 
-/*.remove-btn {*/
-/*    background-color: rgba(248, 76, 76, 0.6);*/
-/*    border-radius: 10px;*/
-/*    margin-right: 8px;*/
-
-/*}*/
-
 .menu-btn {
     background-color: rgba(0, 255, 255, 0.22);
     border-radius: 4px;
@@ -84,7 +76,6 @@ body {
     padding: 3px;
     margin-left: auto;
     margin-right: 18px;
-
 }
 
 .menu-frame {
@@ -93,7 +84,7 @@ body {
     justify-content: center;
     align-items: center;
     align-content: center;
-    gap: 25px;
+    gap: 15px;
     position: fixed;
     top: 0;
     right: 0;
@@ -104,10 +95,20 @@ body {
 }
 
 .menu-frame--title {
+    margin: 5px;
+    padding: 5px;
+    text-transform: capitalize;
     font-size: xxx-large;
     color: #03cccc;
     text-shadow: 4px 6px 5px black;
+}
 
+.menu-frame--subtitle {
+    margin: 5px;
+    padding: 5px;
+    font-size: x-large;
+    color: #d50606;
+    text-shadow: 4px 6px 5px black;
 }
 
 .menu-frame--message {

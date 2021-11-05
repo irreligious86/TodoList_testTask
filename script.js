@@ -5,27 +5,24 @@ let todoListArr = [
     {
         todo: "I am task list item",
         checked: false,
-        important: false
+        important: false,
+        id: Math.floor((Math.random() * 1000000000000) + 1)
     },
     {
         todo: "I am important task list item",
         checked: false,
-        important: true
+        important: true,
+        id: Math.floor((Math.random() * 1000000000000) + 1)
     },
     {
         todo: "I am checked task list item",
         checked: true,
-        important: false
-    },
-    {
-        todo: "I am checked important task list item",
-        checked: true,
-        important: true
+        important: false,
+        id: Math.floor((Math.random() * 1000000000000) + 1)
     }
 ];
 
-
-const initLocalStorage  = () => {
+const initLocalStorage = () => {
     if (localStorage.getItem('todo')) {
         todoListArr = JSON.parse(localStorage.getItem('todo'))
     } else {
@@ -34,15 +31,23 @@ const initLocalStorage  = () => {
 };
 initLocalStorage();
 
-// const removeBtn = document.createElement('button');
-// const removeBtnText = document.createTextNode('X');
-// const renderNewRemoveBtn = () => {
-//     removeBtn.type = 'button';
-//     removeBtn.classList.add('remove-btn', 'righted');
-//     removeBtn.append(removeBtnText);
-// };
+const taskCreator = () => {
+    let newTodo = {
+        todo: inputAddTask.value,
+        checked: false,
+        important: false,
+        id: Math.floor((Math.random() * 1000000000000) + 1)
+    }
+    todoListArr.push(newTodo);
+};
 
-const renderSingleTask = (task, index) => {
+const taskDeleter = (id) => {
+    todoListArr.forEach((item, index) => {
+        if (item.id === id) {todoListArr.splice(index, 1)}
+    })
+};
+
+const renderSingleTask = (item, index) => {
     const newItem = document.createElement('li');
     const newItemLabel = document.createElement('label');
     const newCheckbox = document.createElement('input');
@@ -51,8 +56,8 @@ const renderSingleTask = (task, index) => {
 
     const renderNewItem = () => {
         newItem.classList.add('tasks-list-item');
-        newItem.important = task.important;
-        newItemLabel.innerHTML = task.todo;
+        newItem.important = item.important;
+        newItemLabel.innerHTML = item.todo;
         newItem.append(newItemLabel);
         newItem.appendChild(itemMenuBtn);
         newItem.prepend(newCheckbox);
@@ -64,9 +69,9 @@ const renderSingleTask = (task, index) => {
 
     const renderNewCheckbox = () => {
         newCheckbox.type = 'checkbox';
-        newCheckbox.id = +index;
+        newCheckbox.id = index;
         newItemLabel.htmlFor = newCheckbox.id;
-        newCheckbox.checked = task.checked;
+        newCheckbox.checked = item.checked;
         newCheckbox.classList.add('tasks-list-item');
         newCheckbox.onchange = (() => {
             if (newCheckbox.checked) {
@@ -81,8 +86,8 @@ const renderSingleTask = (task, index) => {
         itemMenuBtn.type = 'button';
         itemMenuBtn.classList.add('menu-btn');
         itemMenuBtn.append(itemMenuBtnText);
-        itemMenuBtn.onclick = itemMenuRender;
-};
+        itemMenuBtn.onclick = () => renderItemMenu(item.id);
+    };
 
     tasksList.appendChild(newItem);
     renderNewItem();
@@ -92,7 +97,9 @@ const renderSingleTask = (task, index) => {
 
 const renderTasks = () => todoListArr.forEach((item, index) => renderSingleTask(item, index));
 
-const itemMenuRender = () => {
+const renderItemMenu = (id) => {
+    const currentTask = todoListArr.find( t => t.id === id )
+
     const menuFrame = document.createElement('div');
     tasksList.append(menuFrame);
     menuFrame.classList.add('menu-frame');
@@ -101,7 +108,13 @@ const itemMenuRender = () => {
     menuFrameTitle.classList.add('menu-frame--title');
     menuFrame.append(menuFrameTitle);
 
-    const menuFrameTitleText = document.createTextNode('Task title');
+    // const menuFrameSubtitle = document.createElement('h5');
+    // const menuFrameSubtitleTextNode = document.createTextNode('');
+    // menuFrameSubtitle.append(menuFrameSubtitleTextNode);
+    // menuFrameSubtitle.classList.add('menu-frame--subtitle');
+    // menuFrame.append(menuFrameSubtitle);
+
+    const menuFrameTitleText = document.createTextNode(currentTask.todo);
     menuFrameTitle.append(menuFrameTitleText);
 
     const menuFrameMessage = document.createElement('div');
@@ -126,7 +139,12 @@ const itemMenuRender = () => {
 
     menuFrameBtnOk.onclick = () => tasksList.removeChild(tasksList.lastChild);
 
-    menuFrameBtnDel.onclick = () => tasksList.removeChild(tasksList.lastChild);
+    menuFrameBtnDel.onclick = () => {
+        tasksList.removeChild(tasksList.lastChild);
+        taskDeleter(id);
+        reloadRender();
+        localStorage.setItem('todo', JSON.stringify(todoListArr));
+    };
 };
 
 const reloadRender = () => {
@@ -139,11 +157,7 @@ const reloadRender = () => {
 
 const buttonAddTaskHandler = () => {
 
-    let newTodo = {
-        todo: inputAddTask.value,
-        checked: false,
-        important: false
-    }
+    taskCreator();
 
     if (!inputAddTask.value) {
         alert("Task cannot be empty!");
@@ -156,7 +170,6 @@ const buttonAddTaskHandler = () => {
         return;
     }
 
-    todoListArr.push(newTodo);
     localStorage.setItem('todo', JSON.stringify(todoListArr));
     reloadRender();
 };
