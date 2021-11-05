@@ -13,6 +13,11 @@ body {
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.8), 3px 3px 3px dimgrey;
 }
 
+/*.checked {*/
+/*    text-decoration: line-through;*/
+/*    color: rgba(31, 31, 31, 0.73);*/
+/*}*/
+
 .wrapper {
     margin: 0 auto;
     padding: 15px;
@@ -52,9 +57,23 @@ body {
 }
 
 .tasks-list {
-list-style-type: none;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
 }
 
 .tasks-list-item {
+    display: flex;
+    align-items: baseline;
+    margin: 5px;
+    padding: 5px;
+    background-color: rgba(250, 250, 210, 0.47);
+}
+
+.remove-btn {
+    background-color: rgba(248, 76, 76, 0.6);
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: 8px;
 
 }
