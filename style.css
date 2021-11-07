@@ -9,14 +9,10 @@ body {
 
 .important {
     font-weight: bold;
-    color: #f84c4c;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8), 3px 3px 3px dimgrey;
+    color: #343434;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+    text-decoration: underline;
 }
-
-/*.checked {*/
-/*    text-decoration: line-through;*/
-/*    color: rgba(31, 31, 31, 0.73);*/
-/*}*/
 
 .wrapper {
     margin: 0 auto;
@@ -67,6 +63,7 @@ body {
     margin: 5px;
     padding: 5px;
     background-color: rgba(250, 250, 210, 0.47);
+    color: rgba(52, 52, 52, 0.72);
 }
 
 .menu-btn {
