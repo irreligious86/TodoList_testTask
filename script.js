@@ -133,7 +133,7 @@ const renderItemMenu = (id) => {
     menuFrameTitle.append(menuFrameTitleText);
 
     const menuFrameMessage = document.createElement('div');
-    const menuFrameMessageTextNode = document.createTextNode('Task description. It may be very loooooooooooooooooong message... if you want... But you never see it untill you return Item Menu');
+    const menuFrameMessageTextNode = document.createTextNode('Task description. It may be very lo-o-ong message... if you want... But you never see it untill you return Item Menu');
     menuFrameMessage.append(menuFrameMessageTextNode);
     menuFrameMessage.classList.add('menu-frame--message');
     menuFrame.append(menuFrameMessage);
@@ -172,8 +172,6 @@ const reloadRender = () => {
 
 const buttonAddTaskHandler = () => {
 
-    taskCreator();
-
     if (!inputAddTask.value) {
         alert("Task cannot be empty!");
         return;
@@ -183,6 +181,11 @@ const buttonAddTaskHandler = () => {
         alert("Task value must start with non-SPACE symbol!");
         inputAddTask.value = '';
         return;
+    }
+
+    if (inputAddTask.value) {
+        taskCreator();
+        inputAddTask.value = '';
     }
 
     localStorage.setItem('todo', JSON.stringify(todoListArr));
@@ -207,8 +210,8 @@ tasksList.addEventListener('change', event => {
     let forLabel = tasksList.querySelector('[for="' + idInput + '"]');
     let valueLabel = forLabel.innerHTML;
     todoListArr.forEach((item) => {
-        if (item.todo === valueLabel) {
-            item.checked = !item.checked;
+        if (item.title === valueLabel) {
+            item.completed = !item.completed;
             localStorage.setItem('todo', JSON.stringify(todoListArr));
         }
     })
@@ -227,24 +230,3 @@ cleanBtn.addEventListener('click', () => {
     renderTasks();
     reloadRender()
 });
-
-// const getData = async (url) => {
-//     const response = await fetch(url);
-//     if ( !response.ok ) {
-//         throw new Error(`Error on address ${url}, error status: ${response}`);
-//     }
-//     return await response.json();
-// };
-
-// const sendData = async (url, data) => {
-//     const response = await fetch(url, {
-//         method: 'POST',
-//         body: JSON.stringify(data)
-//     })
-//     if ( !response.ok ) {
-//         throw new Error(`Error on address ${url}, error status: ${response}`);
-//     }
-//     return await response.json();
-// }
-
-// localStorage.setItem('todo', JSON.stringify([]));
