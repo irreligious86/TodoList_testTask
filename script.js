@@ -1,49 +1,67 @@
+const urlTodos = 'https://jsonplaceholder.typicode.com/todos';
 const inputAddTask = document.querySelector('.input-add-task');
 const buttonAddTask = document.querySelector('.button-add-task');
 const tasksList = document.querySelector('.tasks-list');
-let todoListArr = [
-    {
-        todo: "I am task list item",
-        checked: false,
-        important: false,
-        id: Math.floor((Math.random() * 1000000000000) + 1)
-    },
-    {
-        todo: "I am important task list item",
-        checked: false,
-        important: true,
-        id: Math.floor((Math.random() * 1000000000000) + 1)
-    },
-    {
-        todo: "I am checked task list item",
-        checked: true,
-        important: false,
-        id: Math.floor((Math.random() * 1000000000000) + 1)
+const randomBtn = document.querySelector('.random-button');
+const cleanBtn = document.querySelector('.clean-button');
+let todoListArr = [];
+let tasksArrFromServer = [];
+
+const getTasks = async (url, array) => {
+    try {
+        const response = await fetch(url);
+        const result = await response.json();
+        tasksArrFromServer.push(...result);
+        console.log(array);
+    } catch (error) {
+        console.error(error);
     }
-];
+};
+
+const sendTasks = async (url, array) => {
+
+    await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(array),
+    })
+
+}
+
+const setLocalStorage = () => {
+    localStorage.setItem('todo', JSON.stringify(todoListArr));
+};
 
 const initLocalStorage = () => {
     if (localStorage.getItem('todo')) {
         todoListArr = JSON.parse(localStorage.getItem('todo'))
     } else {
-        localStorage.setItem('todo', JSON.stringify(todoListArr));
+        setLocalStorage();
     }
 };
-initLocalStorage();
 
-const taskCreator = () => {
-    let newTodo = {
-        todo: inputAddTask.value,
-        checked: false,
-        important: false,
-        id: Math.floor((Math.random() * 1000000000000) + 1)
+const taskCreator = async () => {
+
+    const newTodo = {
+        userId: Math.floor(Math.random() * 1e8 + 1),
+        id: Math.floor(Math.random() * 1e16 + 1),
+        title: inputAddTask.value,
+        completed: false,
     }
+
     todoListArr.push(newTodo);
+    sendTasks(urlTodos, todoListArr);
+    // setLocalStorage();
+
 };
 
 const taskDeleter = (id) => {
     todoListArr.forEach((item, index) => {
-        if (item.id === id) {todoListArr.splice(index, 1)}
+        if (item.id === id) {
+            todoListArr.splice(index, 1)
+        }
     })
 };
 
@@ -56,11 +74,11 @@ const renderSingleTask = (item, index) => {
 
     const renderNewItem = () => {
         newItem.classList.add('tasks-list-item');
-        newItem.important = item.important;
-        newItemLabel.innerHTML = item.todo;
+        newItemLabel.innerHTML = item.title;
         newItem.append(newItemLabel);
         newItem.appendChild(itemMenuBtn);
         newItem.prepend(newCheckbox);
+        newItem.userId = item.userId;
 
         if (newItem.important) {
             newItem.classList.add('important');
@@ -71,7 +89,7 @@ const renderSingleTask = (item, index) => {
         newCheckbox.type = 'checkbox';
         newCheckbox.id = index;
         newItemLabel.htmlFor = newCheckbox.id;
-        newCheckbox.checked = item.checked;
+        newCheckbox.checked = item.completed;
         newCheckbox.classList.add('tasks-list-item');
         newCheckbox.onchange = (() => {
             if (newCheckbox.checked) {
@@ -79,7 +97,7 @@ const renderSingleTask = (item, index) => {
             } else {
                 newCheckbox.classList.remove('checked');
             }
-        })
+        });
     };
 
     const renderItemMenuBtn = () => {
@@ -89,16 +107,19 @@ const renderSingleTask = (item, index) => {
         itemMenuBtn.onclick = () => renderItemMenu(item.id);
     };
 
-    tasksList.appendChild(newItem);
+    tasksList.prepend(newItem);
     renderNewItem();
     renderNewCheckbox();
     renderItemMenuBtn();
 };
 
-const renderTasks = () => todoListArr.forEach((item, index) => renderSingleTask(item, index));
+const renderTasks = () => {
+    todoListArr.forEach((item, index) => renderSingleTask(item, index))
+};
 
 const renderItemMenu = (id) => {
-    const currentTask = todoListArr.find( t => t.id === id )
+
+    const currentTask = todoListArr.find(t => t.id === id)
 
     const menuFrame = document.createElement('div');
     tasksList.append(menuFrame);
@@ -108,17 +129,11 @@ const renderItemMenu = (id) => {
     menuFrameTitle.classList.add('menu-frame--title');
     menuFrame.append(menuFrameTitle);
 
-    // const menuFrameSubtitle = document.createElement('h5');
-    // const menuFrameSubtitleTextNode = document.createTextNode('');
-    // menuFrameSubtitle.append(menuFrameSubtitleTextNode);
-    // menuFrameSubtitle.classList.add('menu-frame--subtitle');
-    // menuFrame.append(menuFrameSubtitle);
-
-    const menuFrameTitleText = document.createTextNode(currentTask.todo);
+    const menuFrameTitleText = document.createTextNode(currentTask.title);
     menuFrameTitle.append(menuFrameTitleText);
 
     const menuFrameMessage = document.createElement('div');
-    const menuFrameMessageTextNode = document.createTextNode('Task message. It may be very loooooooooooooooooong message... if you want... ');
+    const menuFrameMessageTextNode = document.createTextNode('Task description. It may be very loooooooooooooooooong message... if you want... But you never see it untill you return Item Menu');
     menuFrameMessage.append(menuFrameMessageTextNode);
     menuFrameMessage.classList.add('menu-frame--message');
     menuFrame.append(menuFrameMessage);
@@ -174,7 +189,16 @@ const buttonAddTaskHandler = () => {
     reloadRender();
 };
 
-document.addEventListener("DOMContentLoaded", renderTasks);
+const addRandomTaskFromServer = () => {
+    todoListArr.push(tasksArrFromServer[Math.floor(Math.random() * (tasksArrFromServer.length + 1))]);
+    setLocalStorage();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    initLocalStorage();
+    getTasks(urlTodos, todoListArr);
+    renderTasks();
+});
 
 buttonAddTask.addEventListener('click', buttonAddTaskHandler);
 
@@ -190,13 +214,37 @@ tasksList.addEventListener('change', event => {
     })
 });
 
-tasksList.addEventListener('contextmenu', event => {
-    event.preventDefault();
-    todoListArr.forEach((item) => {
-        if (item.todo === event.target.innerHTML) {
-            item.important = !item.important;
-            localStorage.setItem('todo', JSON.stringify(todoListArr));
-        }
-    });
+randomBtn.addEventListener('click', () => {
+    addRandomTaskFromServer();
+    initLocalStorage();
+    renderTasks();
     reloadRender();
 });
+
+cleanBtn.addEventListener('click', () => {
+    localStorage.setItem('todo', JSON.stringify([]));
+    initLocalStorage();
+    renderTasks();
+    reloadRender()
+});
+
+// const getData = async (url) => {
+//     const response = await fetch(url);
+//     if ( !response.ok ) {
+//         throw new Error(`Error on address ${url}, error status: ${response}`);
+//     }
+//     return await response.json();
+// };
+
+// const sendData = async (url, data) => {
+//     const response = await fetch(url, {
+//         method: 'POST',
+//         body: JSON.stringify(data)
+//     })
+//     if ( !response.ok ) {
+//         throw new Error(`Error on address ${url}, error status: ${response}`);
+//     }
+//     return await response.json();
+// }
+
+// localStorage.setItem('todo', JSON.stringify([]));
